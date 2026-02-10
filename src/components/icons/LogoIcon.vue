@@ -1,0 +1,11 @@
+<script setup lang="ts">
+</script>
+
+<template>
+<svg class="header__logo-logo" xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="0 0 28 20" fill="none">
+<path d="M12 1.5H26.5V8C26.5 13.799 21.799 18.5 16 18.5H1.5V12C1.5 6.20101 6.20101 1.5 12 1.5Z" stroke="#2BB567" stroke-width="3"/>
+</svg>
+</template>
+
+<style>
+</style>
