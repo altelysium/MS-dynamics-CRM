@@ -18,21 +18,20 @@ export interface sheetRow {
 }
 
 const usersStore = useUsersStore();
-let { users } = storeToRefs(usersStore);
+let { users, fetchedData } = storeToRefs(usersStore);
 
 const sheetData = ref<sheetRow[]>([]);
 let isLoading = ref<boolean>(false);
 function setSheetData(data: User[]): sheetRow[] {
   if (users) {
+    sheetData.value.length = 0;
     for (let user of data) {
       const row: sheetRow = {
         name: `${user.firstName} ${user.lastName}`,
         cityCountry: `${user.address.city}/${user.address.country}`,
-        availableHours:
-          Math.round(user.weight) % 2 ? "8:00 - 18:00" : "12:00 - 22:00",
+        availableHours: Math.round(user.weight) % 2 ? "8:00 - 18:00" : "12:00 - 22:00",
         schedule: "Book date",
-        confirmation:
-          Math.round(user.height) % 2 ? "Confirmed" : "Not confirmed",
+        confirmation: Math.round(user.height) % 2 ? "Confirmed" : "Not confirmed",
         specs: user.company.title,
         image: user.image,
       };
@@ -42,7 +41,7 @@ function setSheetData(data: User[]): sheetRow[] {
   return sheetData.value;
 }
 
-watch(users, () => {
+watch(users, (): void => {
   if (users.value) {
     setSheetData(users.value);
     isLoading.value = false;
@@ -70,7 +69,13 @@ onBeforeMount((): void => {
         </template>
       </Button>
     </nav>
-    <Sheet :sheet-data="sheetData" :is-loading="isLoading" />
+    <Sheet
+      :sheet-data="sheetData"
+      :is-loading="isLoading"
+      :total="fetchedData ? fetchedData.total : 10"
+      :rows="fetchedData ? fetchedData.limit : 10"
+      :first="fetchedData ? fetchedData.skip : 0"
+    />
   </section>
 </template>
 

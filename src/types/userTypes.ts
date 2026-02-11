@@ -79,5 +79,4 @@ export interface ResponseData {
 // export interface QueryParams {
 //   limit: "10" | "20" | "30",
 //   skip: number,
-//   order: "asc" | "desc",
 // }
