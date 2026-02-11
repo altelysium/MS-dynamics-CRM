@@ -3,7 +3,7 @@ import { type Config } from "prettier";
 const config: Config = {
   trailingComma: "all",
   tabWidth: 2,
-  semi: false,
+  semi: true,
   singleQuote: false,
   bracketSpacing: true,
   objectWrap: "preserve",
