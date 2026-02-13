@@ -9,7 +9,7 @@ import FilterPopover from "../components/FilterPopover.vue";
 import FilterIcon from "../components/icons/FilterIcon.vue";
 
 const usersStore = useUsersStore();
-let { users, fetchedData, sheetPageResetter } = storeToRefs(usersStore);
+let { users, fetchedData, sheetPageResetter, queryParams } = storeToRefs(usersStore);
 
 export interface sheetRow {
   id: number;
@@ -24,7 +24,7 @@ export interface sheetRow {
 
 const sheetData = ref<sheetRow[]>([]);
 let isLoading = ref<boolean>(false);
-const FilterPopoberRef = ref<InstanceType<typeof FilterPopover> | null>(null);
+const FilterPopoverRef = ref<InstanceType<typeof FilterPopover> | null>(null);
 
 function setSheetData(data: User[]): sheetRow[] {
   if (users) {
@@ -45,7 +45,7 @@ function setSheetData(data: User[]): sheetRow[] {
   }
   return sheetData.value;
 }
-const togglePopover = (e: PointerEvent): void => FilterPopoberRef.value?.popover?.toggle(e);
+const togglePopover = (e: PointerEvent): void => FilterPopoverRef.value?.popover?.toggle(e);
 
 watch(users, (): void => {
   if (users.value) {
@@ -56,7 +56,8 @@ watch(users, (): void => {
 
 onBeforeMount((): void => {
   isLoading.value = true;
-  usersStore.getUsersData();
+  queryParams.value.has("key") ? usersStore.getUsersData("users/filter") : usersStore.getUsersData();
+  console.log(fetchedData.value)
 });
 </script>
 
@@ -76,7 +77,7 @@ onBeforeMount((): void => {
           <FilterIcon />
         </template>
       </Button>
-      <FilterPopover ref="FilterPopoberRef" @set-page-resetter="() => sheetPageResetter = 0" />
+      <FilterPopover ref="FilterPopoverRef" @set-page-resetter="() => sheetPageResetter = 0" />
     </nav>
     <Sheet
       :sheet-data="sheetData"

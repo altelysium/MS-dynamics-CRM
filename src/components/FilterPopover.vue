@@ -23,10 +23,8 @@ const filters: Filters = {
 };
 
 function submitFilters(filterValue: string, key: string, e: PointerEvent): void {
-  resetFilters(e, true);
-  queryParams.value.delete("skip");
-  queryParams.value.delete("limit");
   if (filterValue) {
+    resetFilters(e, true);
     setFilters(filterValue, key);
     usersStore.getUsersData("users/filter");
   }
@@ -35,6 +33,7 @@ function submitFilters(filterValue: string, key: string, e: PointerEvent): void 
 function setFilters(filterValue: string, key: string): void {
   queryParams.value.set("key", key);
   queryParams.value.set("value", filterValue);
+  queryParams.value.set("skip", "0");
 }
 
 function resetFilters(e: PointerEvent, isUpdating?: boolean): void {

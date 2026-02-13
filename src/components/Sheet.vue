@@ -5,7 +5,7 @@ import ScheduleIcon from "./icons/ScheduleIcon.vue";
 import { Button } from "primevue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { router } from "../router/routes";
 
 const props = defineProps<{
@@ -49,6 +49,8 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
   selectedUserId.value = e.data.id;
   router.push({ path: "/user/" + selectedUserId.value });
 }
+
+onMounted(() => console.log(props.total, localRows.value, localFirst.value))
 </script>
 
 <template>
