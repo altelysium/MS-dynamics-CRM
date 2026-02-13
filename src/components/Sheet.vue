@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { DataTable, Column, type DataTablePageEvent } from "primevue";
+import { DataTable, Column, type DataTablePageEvent, type DataTableRowSelectEvent } from "primevue";
 import type { sheetRow } from "../views/HomeView.vue";
 import ScheduleIcon from "./icons/ScheduleIcon.vue";
 import { Button } from "primevue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { router } from "../router/routes";
+
 const props = defineProps<{
   sheetData: sheetRow[];
   isLoading: boolean;
@@ -13,40 +15,47 @@ const props = defineProps<{
   rows: number;
   first: number;
 }>();
-const usersStore = useUsersStore();
-let { queryParams } = storeToRefs(usersStore);
 
-let localFirst = ref<number>(props.first);
+const usersStore = useUsersStore();
+let { queryParams, selectedUserId, sheetPageResetter } = storeToRefs(usersStore);
+
+let localFirst = ref<number | undefined>(props.first);
 let localRows = ref<number>(props.rows);
 
-function updatePage(e: DataTablePageEvent): void {
-  localFirst.value = e.first;
-  queryParams.value.set("skip", String(localFirst.value));
-  usersStore.getUsersData();
+watch(sheetPageResetter, () => {
+  if (typeof sheetPageResetter.value === "number") {
+    updatePage(sheetPageResetter.value)
+  }
+})
+
+function updatePage(e?: DataTablePageEvent | number | null): void {
+  if (typeof e === "number") {
+    localFirst.value = e;
+    sheetPageResetter.value = null
+  } else {
+    localFirst.value = e?.first
+    queryParams.value.set("skip", String(localFirst.value));
+    queryParams.value.has("key") ? usersStore.getUsersData("users/filter") : usersStore.getUsersData();
+  }
+  window.scrollTo(0, 0);
 }
 
 function updateLimit(rows: number): void {
   localRows.value = rows;
   queryParams.value.set("limit", String(localRows.value));
 }
+
+function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
+  selectedUserId.value = e.data.id;
+  router.push({ path: "/user/" + selectedUserId.value });
+}
 </script>
 
 <template>
-  <DataTable
-    :value="sheetData"
-    :loading="isLoading"
-    paginator
-    lazy
-    :totalRecords="total"
-    :rows="localRows"
-    :first="localFirst"
-    @page="updatePage"
-    @update:rows="updateLimit"
-    :rowsPerPageOptions="[10, 20, 30]"
-    scrollable
-    scrollHeight="600px"
-    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0"
-  >
+  <DataTable :value="sheetData" selectionMode="single" dataKey="id" :loading="isLoading" paginator lazy
+    :totalRecords="total" :rows="localRows" :first="localFirst" @page="updatePage" @update:rows="updateLimit"
+    @row-select="selectUser" :rowsPerPageOptions="[10, 20, 30]"
+    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0">
     <Column field="name" header="Name">
       <template #body="slotProps">
         <div class="column-name-wrapper">
@@ -62,12 +71,8 @@ function updateLimit(rows: number): void {
     <Column field="availableHours" header="Available hours"></Column>
     <Column field="schedule" header="Schedule an appointment">
       <template #body="slotProps">
-        <Button
-          :label="slotProps.data.schedule"
-          severity="success"
-          variant="text"
-          style="display: flex; vertical-align: middle; border: 0"
-        >
+        <Button :label="slotProps.data.schedule" severity="success" variant="text"
+          style="display: flex; vertical-align: middle; border: 0">
           <template #icon>
             <ScheduleIcon />
           </template>
@@ -111,5 +116,19 @@ function updateLimit(rows: number): void {
 
 :deep(.p-datatable-tbody > tr > td) {
   vertical-align: middle;
+}
+
+:deep(.p-datatable-paginator-bottom) {
+  border-bottom: 0;
+  border-top: 1px #ececed solid;
+}
+
+:deep(.p-paginator) {
+  padding: 16px 0 0 0;
+}
+
+:deep(.p-paginator-page),
+:deep(.p-select) {
+  font: 400 14px/21px "Poppins";
 }
 </style>

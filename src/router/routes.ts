@@ -6,7 +6,7 @@ import UserView from "../views/UserView.vue";
 const routes: RouteRecordRaw[] = [
   { path: "/", component: HomeView },
   { path: "/login", component: LoginView },
-  { path: "/user", component: UserView },
+  { path: "/user/:id", component: UserView },
 ];
 
 export const router: Router = createRouter({

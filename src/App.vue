@@ -13,8 +13,8 @@ import { RouterView } from "vue-router";
 <style scoped>
 .main {
   width: 100%;
-  height: calc(100vh - 70px);
+  height: 100%;
   background-color: #f9f9f9;
-  padding-top: 24px;
+  padding: 24px 0;
 }
 </style>

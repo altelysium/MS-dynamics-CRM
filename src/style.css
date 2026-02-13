@@ -129,3 +129,6 @@ svg {
 #app {
   font: 500 14px/21px "Poppins";
 }
+html {
+  scroll-behavior: smooth;
+}
