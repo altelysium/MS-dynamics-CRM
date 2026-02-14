@@ -4,9 +4,9 @@ import LoginView from "../views/LoginView.vue";
 import UserView from "../views/UserView.vue";
 
 const routes: RouteRecordRaw[] = [
-  { path: "/", component: HomeView },
-  { path: "/login", component: LoginView },
-  { path: "/user/:id", component: UserView },
+  { path: "/", name: "home", component: HomeView },
+  { path: "/login", name: "login", component: LoginView },
+  { path: "/user/:id", name: "profile", component: UserView },
 ];
 
 export const router: Router = createRouter({

@@ -10,15 +10,39 @@ let { queryParams } = storeToRefs(usersStore);
 
 const popover = ref<InstanceType<typeof Popover> | null>(null);
 defineExpose({ popover });
-const emit = defineEmits(['setPageResetter']);
+const emit = defineEmits<{ (event: "setPageResetter"): number }>();
 
 interface Filters {
-  depatmentsArray: ["Engineering", "Support", "Research and Development", "Human Resources", "Product Management", "Marketing", "Services", "Accounting", "Training", "Legal", "Sales"];
-  depatmentsValue: string;
+  depatmentsArray: [
+    "Engineering",
+    "Support",
+    "Research and Development",
+    "Human Resources",
+    "Product Management",
+    "Marketing",
+    "Services",
+    "Accounting",
+    "Training",
+    "Legal",
+    "Sales",
+  ];
+  depatmentsValue: (typeof filters.depatmentsArray)[number] | "";
 }
 
 const filters: Filters = {
-  depatmentsArray: ["Engineering", "Support", "Research and Development", "Human Resources", "Product Management", "Marketing", "Services", "Accounting", "Training", "Legal", "Sales"],
+  depatmentsArray: [
+    "Engineering",
+    "Support",
+    "Research and Development",
+    "Human Resources",
+    "Product Management",
+    "Marketing",
+    "Services",
+    "Accounting",
+    "Training",
+    "Legal",
+    "Sales",
+  ] as const,
   depatmentsValue: "",
 };
 
@@ -34,6 +58,7 @@ function setFilters(filterValue: string, key: string): void {
   queryParams.value.set("key", key);
   queryParams.value.set("value", filterValue);
   queryParams.value.set("skip", "0");
+  queryParams.value.set("limit", "10");
 }
 
 function resetFilters(e: PointerEvent, isUpdating?: boolean): void {
@@ -48,7 +73,6 @@ function resetFilters(e: PointerEvent, isUpdating?: boolean): void {
 }
 
 const togglePopover = (e: PointerEvent): void => popover.value?.toggle(e);
-
 </script>
 
 <template>
@@ -57,13 +81,30 @@ const togglePopover = (e: PointerEvent): void => popover.value?.toggle(e);
       <h4 class="popover__title">Filter</h4>
       <div class="popover-row">
         <p class="popover-row__label">Specialist</p>
-        <Select v-model="filters.depatmentsValue" :options="filters.depatmentsArray" name="department"
-          placeholder="Select specialist" style="height: 32px; font-size: 14px; line-height: 14px; width: 200px" />
+        <Select
+          v-model="filters.depatmentsValue"
+          :options="filters.depatmentsArray"
+          name="department"
+          placeholder="Select specialist"
+          style="height: 32px; font-size: 14px; line-height: 14px; width: 200px"
+        />
       </div>
       <div class="popover-buttons-row">
-        <Button type="button" @click="(e) => submitFilters(filters.depatmentsValue, 'company.department', e)"
-          label="Submit" rounded style="flex: 1"></Button>
-        <Button @click="resetFilters" type="reset" label="Reset" severity="secondary" rounded style="flex: 1"></Button>
+        <Button
+          type="button"
+          @click="(e) => submitFilters(filters.depatmentsValue, 'company.department', e)"
+          label="Submit"
+          rounded
+          style="flex: 1"
+        ></Button>
+        <Button
+          @click="resetFilters"
+          type="reset"
+          label="Reset"
+          severity="secondary"
+          rounded
+          style="flex: 1"
+        ></Button>
       </div>
     </Form>
   </Popover>

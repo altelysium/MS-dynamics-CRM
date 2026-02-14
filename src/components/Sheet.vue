@@ -5,8 +5,9 @@ import ScheduleIcon from "./icons/ScheduleIcon.vue";
 import { Button } from "primevue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { router } from "../router/routes";
+import { useProfileStore } from "../stores/profileStore";
 
 const props = defineProps<{
   sheetData: sheetRow[];
@@ -17,25 +18,29 @@ const props = defineProps<{
 }>();
 
 const usersStore = useUsersStore();
-let { queryParams, selectedUserId, sheetPageResetter } = storeToRefs(usersStore);
+const profileStore = useProfileStore();
+let { queryParams, sheetPageResetter } = storeToRefs(usersStore);
+let { selectedUserId } = storeToRefs(profileStore);
 
-let localFirst = ref<number | undefined>(props.first);
+let localFirst = ref<number>(props.first);
 let localRows = ref<number>(props.rows);
 
 watch(sheetPageResetter, () => {
   if (typeof sheetPageResetter.value === "number") {
-    updatePage(sheetPageResetter.value)
+    updatePage(sheetPageResetter.value);
   }
-})
+});
 
-function updatePage(e?: DataTablePageEvent | number | null): void {
+function updatePage(e?: DataTablePageEvent | number): void {
   if (typeof e === "number") {
     localFirst.value = e;
-    sheetPageResetter.value = null
-  } else {
-    localFirst.value = e?.first
+    sheetPageResetter.value = null;
+  } else if (e) {
+    localFirst.value = e.first;
     queryParams.value.set("skip", String(localFirst.value));
-    queryParams.value.has("key") ? usersStore.getUsersData("users/filter") : usersStore.getUsersData();
+    queryParams.value.has("key")
+      ? usersStore.getUsersData("users/filter")
+      : usersStore.getUsersData();
   }
   window.scrollTo(0, 0);
 }
@@ -49,15 +54,25 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
   selectedUserId.value = e.data.id;
   router.push({ path: "/user/" + selectedUserId.value });
 }
-
-onMounted(() => console.log(props.total, localRows.value, localFirst.value))
 </script>
 
 <template>
-  <DataTable :value="sheetData" selectionMode="single" dataKey="id" :loading="isLoading" paginator lazy
-    :totalRecords="total" :rows="localRows" :first="localFirst" @page="updatePage" @update:rows="updateLimit"
-    @row-select="selectUser" :rowsPerPageOptions="[10, 20, 30]"
-    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0">
+  <DataTable
+    :value="sheetData"
+    selectionMode="single"
+    dataKey="id"
+    :loading="isLoading"
+    paginator
+    lazy
+    :totalRecords="total"
+    :rows="localRows"
+    :first="localFirst"
+    @page="updatePage"
+    @update:rows="updateLimit"
+    @row-select="selectUser"
+    :rowsPerPageOptions="[10, 20, 30]"
+    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0"
+  >
     <Column field="name" header="Name">
       <template #body="slotProps">
         <div class="column-name-wrapper">
@@ -73,8 +88,12 @@ onMounted(() => console.log(props.total, localRows.value, localFirst.value))
     <Column field="availableHours" header="Available hours"></Column>
     <Column field="schedule" header="Schedule an appointment">
       <template #body="slotProps">
-        <Button :label="slotProps.data.schedule" severity="success" variant="text"
-          style="display: flex; vertical-align: middle; border: 0">
+        <Button
+          :label="slotProps.data.schedule"
+          severity="success"
+          variant="text"
+          style="display: flex; vertical-align: middle; border: 0"
+        >
           <template #icon>
             <ScheduleIcon />
           </template>

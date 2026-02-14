@@ -66,17 +66,12 @@ export interface User {
     wallet: string;
     network: string;
   };
-  role: string;
+  role: "admin" | "moderator" | "user";
 }
 
-export interface ResponseData {
+export interface UsersResponseData {
   limit: number;
   skip: number;
   total: number;
   users: User[];
 }
-
-// export interface QueryParams {
-//   limit: "10" | "20" | "30",
-//   skip: number,
-// }

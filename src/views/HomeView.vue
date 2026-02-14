@@ -56,8 +56,9 @@ watch(users, (): void => {
 
 onBeforeMount((): void => {
   isLoading.value = true;
-  queryParams.value.has("key") ? usersStore.getUsersData("users/filter") : usersStore.getUsersData();
-  console.log(fetchedData.value)
+  queryParams.value.has("key")
+    ? usersStore.getUsersData("users/filter")
+    : usersStore.getUsersData();
 });
 </script>
 
@@ -77,13 +78,16 @@ onBeforeMount((): void => {
           <FilterIcon />
         </template>
       </Button>
-      <FilterPopover ref="FilterPopoverRef" @set-page-resetter="() => sheetPageResetter = 0" />
+      <FilterPopover
+        ref="FilterPopoverRef"
+        @set-page-resetter="(): number => (sheetPageResetter = 0)"
+      />
     </nav>
     <Sheet
       :sheet-data="sheetData"
       :is-loading="isLoading"
       :total="fetchedData ? fetchedData.total : 10"
-      :rows="fetchedData ? fetchedData.limit : 10"
+      :rows="queryParams.get('limit') ? Number(queryParams.get('limit')) : 10"
       :first="fetchedData ? fetchedData.skip : 0"
     />
   </section>
