@@ -1,20 +1,34 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../stores/profileStore";
-import { computed, onMounted } from "vue";
-import type { ContactInfoKeys, HeaderData, KeyValueRow, PersonalDataKeys, InsuranceInfoKeys } from "../types/profileTypes";
+import { computed, onMounted, ref } from "vue";
+import type {
+  ContactInfoKeys,
+  HeaderData,
+  KeyValueRow,
+  PersonalDataKeys,
+  InsuranceInfoKeys,
+  AppointmentsKeys,
+  Product,
+  FeedbackKeys,
+  Review,
+  ActivitiesDataKeys,
+} from "../types/profileTypes";
 import ProfileCard from "../components/ProfileCard.vue";
 import ProfileCardInfo from "../components/profileCardContent/ProfileCardInfo.vue";
+import ProfileCardSheet from "../components/profileCardContent/ProfileCardSheet.vue";
+import ProfileCardListComponent from "../components/profileCardContent/ProfileCardListComponent.vue";
 
 const profileStore = useProfileStore();
-const { selectedUserId, fetchedProfileData } = storeToRefs(profileStore);
+const { selectedUserId, fetchedProfileData, fetchedProductsData, fetchedSingleProductData } =
+  storeToRefs(profileStore);
 
 const headerData = computed((): HeaderData => {
   return {
     imageSource: fetchedProfileData.value ? fetchedProfileData.value.image : "",
     fullName: `${fetchedProfileData.value?.firstName} ${fetchedProfileData.value?.lastName}`,
-    department: fetchedProfileData.value ? fetchedProfileData.value.company.department : ""
-  }
+    department: fetchedProfileData.value ? fetchedProfileData.value.company.department : "",
+  };
 });
 
 const contactInfoData = computed((): Record<ContactInfoKeys, KeyValueRow> => {
@@ -39,7 +53,7 @@ const contactInfoData = computed((): Record<ContactInfoKeys, KeyValueRow> => {
       key: "Email",
       value: fetchedProfileData.value ? fetchedProfileData.value?.email : "",
     },
-  }
+  };
 });
 const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
   return {
@@ -67,9 +81,20 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
       key: "Emergency Contact",
       value: fetchedProfileData.value ? fetchedProfileData.value?.bank.cardNumber : "",
     },
-  }
+  };
 });
-
+const activitiesData = computed((): ActivitiesDataKeys[] => {
+  const dataArray: ActivitiesDataKeys[] = [];
+  fetchedProductsData.value?.products.forEach((item: Product) => {
+    const date: string = item.meta.updatedAt.slice(0, 10);
+    dataArray.push({
+      title: item.title,
+      description: `by ${item.brand}`,
+      date: date,
+    });
+  });
+  return dataArray;
+});
 const insuranceInfoData = computed((): Record<InsuranceInfoKeys, KeyValueRow> => {
   return {
     memberId: {
@@ -80,12 +105,43 @@ const insuranceInfoData = computed((): Record<InsuranceInfoKeys, KeyValueRow> =>
       key: "Provider",
       value: fetchedProfileData.value ? fetchedProfileData.value?.company.name : "",
     },
-  }
+  };
 });
+const appointmentsData = computed((): Record<AppointmentsKeys, string>[] => {
+  const dataArray: Record<AppointmentsKeys, string>[] = [];
+  fetchedProductsData.value?.products.forEach((item: Product) => {
+    const date: string = `${item.meta.updatedAt.slice(0, 10).split("-").reverse().join("-")}${item.meta.updatedAt.slice(11, 16)} AM`;
+    dataArray.push({
+      date: date,
+      speciality: item.category,
+      status: item.stock % 2 ? "Confirmed" : "Cancelled",
+    });
+  });
+  return dataArray;
+});
+const feedbackData = computed((): Record<FeedbackKeys, string>[] => {
+  const dataArray: Record<FeedbackKeys, string>[] = [];
+  fetchedSingleProductData.value?.reviews?.forEach((item: Review) => {
+    const date: string = `${item.date.slice(0, 10).split("-").reverse().join("-")}`;
+    dataArray.push({
+      feedbackTitle: item.reviewerName,
+      feedbackDate: date,
+      feedbackStatus: String(item.rating),
+    });
+  });
+  return dataArray;
+});
+
+const contactMethodData = ref([
+  { contactMethod: "Email" },
+  { contactMethod: "Mobile phone" },
+  { contactMethod: "Mail" },
+])
 
 onMounted(() => {
   profileStore.getProfileData(selectedUserId.value);
-  console.log(fetchedProfileData.value);
+  profileStore.getProducts();
+  profileStore.getProductReviews(selectedUserId.value);
 });
 </script>
 
@@ -105,8 +161,30 @@ onMounted(() => {
       <ProfileCard title="Personal" card-type="info">
         <ProfileCardInfo :data="personalData" />
       </ProfileCard>
+      <ProfileCard title="Activities" card-type="info" modification="replenished">
+        <ProfileCardListComponent :data="activitiesData" />
+      </ProfileCard>
       <ProfileCard title="Insurance info" card-type="info" modification="editable">
         <ProfileCardInfo :data="insuranceInfoData" />
+      </ProfileCard>
+      <ProfileCard title="Appointments" card-type="sheet" modification="replenished">
+        <ProfileCardSheet :data="appointmentsData" :columns="[
+          { field: 'date', header: 'Start time' },
+          { field: 'speciality', header: 'Speciality' },
+          { field: 'status', header: 'Status' },
+        ]" />
+      </ProfileCard>
+      <ProfileCard title="Feedback" card-type="sheet" modification="replenished">
+        <ProfileCardSheet :data="feedbackData" :columns="[
+          { field: 'feedbackTitle', header: 'Case title' },
+          { field: 'feedbackDate', header: 'Date' },
+          { field: 'feedbackStatus', header: 'Status' },
+        ]" />
+      </ProfileCard>
+      <ProfileCard title="Contact preferences" card-type="sheet">
+        <ProfileCardSheet :data="contactMethodData" :columns="[
+          { field: 'contactMethod', header: 'Contact Method' },
+        ]" />
       </ProfileCard>
     </div>
   </section>
@@ -125,7 +203,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0px -1px 0px 0px #44444F1A inset;
+  box-shadow: 0px -1px 0px 0px #44444f1a inset;
   padding: 35px 30px 10px 30px;
 }
 
@@ -143,16 +221,15 @@ onMounted(() => {
 
 .user-header-info__description {
   font: 400 12px/12px "Poppins";
-  color: #92929D;
+  color: #92929d;
 }
 
 .user-body {
-  height: 900px;
+  height: 1000px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   gap: 20px;
   padding: 35px;
-  
 }
 </style>

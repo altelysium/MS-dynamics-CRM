@@ -6,7 +6,7 @@ import { RouterLink } from "vue-router";
 <template>
   <header class="header">
     <div class="pi pi-bars" style="color: #848485; font-size: 18px"></div>
-    <RouterLink :to="{name: 'home'}" style="text-decoration: none; color: inherit; flex-grow: 2;">
+    <RouterLink :to="{ name: 'home' }" style="text-decoration: none; color: inherit; flex-grow: 2">
       <div class="header__logo">
         <LogoIcon />
         <h1 class="header__logo-title">HCare</h1>
