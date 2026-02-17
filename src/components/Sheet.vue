@@ -125,7 +125,7 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
 }
 
 .td-info__description {
-  font: 500 12px/18px "Poppins";
+  font: 500 12px/18px "Roboto", sans-serif;
   color: #818181;
 }
 

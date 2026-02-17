@@ -71,7 +71,7 @@ const searchInput = ref<string>("");
 .profile-card-list-element-row {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .profile-card-list-element-row > svg {
@@ -87,7 +87,7 @@ const searchInput = ref<string>("");
 
 .profile-card-list-element-info__description,
 .profile-card-list-element__date {
-  font: 400 12px/14px "Poppins";
+  font: 400 12px/14px "Roboto", sans-serif;
   color: #818181;
 }
 

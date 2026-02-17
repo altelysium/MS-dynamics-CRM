@@ -139,7 +139,7 @@ const feedbackData = computed((): Record<FeedbackKeys, string>[] => {
 
 const contactMethodData = ref([
   { contactMethod: "Email" },
-  { contactMethod: "Mobile phone" },
+  { contactMethod: "Mobile Phone" },
   { contactMethod: "Mail" },
 ]);
 watch(fetchedProfileData, (updatedData: User | null): void => {

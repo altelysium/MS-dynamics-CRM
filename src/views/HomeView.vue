@@ -71,7 +71,7 @@ onBeforeMount((): void => {
         label="Filter"
         variant="outlined"
         rounded
-        style="color: #2bb567; border-color: #ececed"
+        style="color: #2bb567; border-color: #ececed; font-family: 'Roboto', sans-serif;"
         @click="togglePopover"
       >
         <template #icon>

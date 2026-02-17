@@ -10,7 +10,7 @@ const props = defineProps<{
   <div class="profile-card-content">
     <div class="profile-card-row" v-for="item in data">
       <h4 class="profile-card-row__title">{{ item.key }}</h4>
-      <a v-if="item.key == 'Email'" :href="`mailto:${item.value}`" class="profile-card-row__description_link">{{ item.value }}</a>
+      <a v-if="item.key == 'Email'" :href="`mailto:${item.value}`" class="profile-card-row__description profile-card-row__description_link">{{ item.value }}</a>
       <p v-else class="profile-card-row__description">{{ item.value }}</p>
     </div>
   </div>
@@ -31,12 +31,13 @@ const props = defineProps<{
 }
 
 .profile-card-row__title {
-  font: 400 12px/14px "Poppins";
+  font: 400 12px/14px "Roboto", sans-serif;
   color: #b5b5be;
 }
 
 .profile-card-row__description {
-  font: 400 14px/16px "Poppins";
+  font: 400 14px/16px "Roboto", sans-serif;
+  letter-spacing: 0.1px;
   color: #44444f;
 }
 
