@@ -10,7 +10,8 @@ const props = defineProps<{
   <div class="profile-card-content">
     <div class="profile-card-row" v-for="item in data">
       <h4 class="profile-card-row__title">{{ item.key }}</h4>
-      <p class="profile-card-row__description">{{ item.value }}</p>
+      <a v-if="item.key == 'Email'" :href="`mailto:${item.value}`" class="profile-card-row__description_link">{{ item.value }}</a>
+      <p v-else class="profile-card-row__description">{{ item.value }}</p>
     </div>
   </div>
 </template>
@@ -36,6 +37,14 @@ const props = defineProps<{
 
 .profile-card-row__description {
   font: 400 14px/16px "Poppins";
+  color: #44444f;
+}
+
+.profile-card-row__description_link {
+  color: #2CB367;
+  text-decoration: none;
+}
+.profile-card-row__description_link:hover {
   color: #44444f;
 }
 </style>

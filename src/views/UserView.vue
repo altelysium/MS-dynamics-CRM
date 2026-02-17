@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../stores/profileStore";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import type {
   ContactInfoKeys,
   HeaderData,
@@ -18,10 +18,17 @@ import ProfileCard from "../components/ProfileCard.vue";
 import ProfileCardInfo from "../components/profileCardContent/ProfileCardInfo.vue";
 import ProfileCardSheet from "../components/profileCardContent/ProfileCardSheet.vue";
 import ProfileCardListComponent from "../components/profileCardContent/ProfileCardListComponent.vue";
+import { Dialog } from "primevue";
+import { type FormFieldState } from "@primevue/forms";
+import type { User } from "../types/userTypes";
+import ModalContent from "../components/ModalContent.vue";
 
 const profileStore = useProfileStore();
 const { selectedUserId, fetchedProfileData, fetchedProductsData, fetchedSingleProductData } =
   storeToRefs(profileStore);
+
+let isModalVisible = ref<boolean>(false);
+let modalTitle = ref<string>("");
 
 const headerData = computed((): HeaderData => {
   return {
@@ -31,30 +38,29 @@ const headerData = computed((): HeaderData => {
   };
 });
 
-const contactInfoData = computed((): Record<ContactInfoKeys, KeyValueRow> => {
-  return {
-    fullName: {
-      key: "Full Name",
-      value: `${fetchedProfileData.value?.firstName} ${fetchedProfileData.value?.lastName}`,
-    },
-    phone: {
-      key: "Phone",
-      value: fetchedProfileData.value ? fetchedProfileData.value.phone : "",
-    },
-    homePhone: {
-      key: "Home phone",
-      value: "-",
-    },
-    address: {
-      key: "Address",
-      value: fetchedProfileData.value ? fetchedProfileData.value.address.address : "",
-    },
-    email: {
-      key: "Email",
-      value: fetchedProfileData.value ? fetchedProfileData.value.email : "",
-    },
-  };
-});
+let contactInfoData = ref<Record<ContactInfoKeys, KeyValueRow>>({
+  fullName: {
+    key: "Full Name",
+    value: "",
+  },
+  phone: {
+    key: "Phone",
+    value: "",
+  },
+  homePhone: {
+    key: "Home Phone",
+    value: "",
+  },
+  address: {
+    key: "Address",
+    value: "",
+  },
+  email: {
+    key: "Email",
+    value: "",
+  },
+},
+);
 const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
   return {
     gender: {
@@ -67,7 +73,7 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
     },
     id: {
       key: "ID",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.id : "",
+      value: fetchedProfileData.value ? String(fetchedProfileData.value?.id) : "",
     },
     nationality: {
       key: "Nationality",
@@ -96,17 +102,15 @@ const activitiesData = computed((): ActivitiesDataKeys[] => {
   });
   return dataArray;
 });
-const insuranceInfoData = computed((): Record<InsuranceInfoKeys, KeyValueRow> => {
-  return {
-    memberId: {
-      key: "Member ID",
-      value: fetchedProfileData.value ? fetchedProfileData.value.bank.cardNumber : "",
-    },
-    provider: {
-      key: "Provider",
-      value: fetchedProfileData.value ? fetchedProfileData.value.company.name : "",
-    },
-  };
+let insuranceInfoData = ref<Record<InsuranceInfoKeys, KeyValueRow>>({
+  memberId: {
+    key: "Member ID",
+    value: fetchedProfileData.value ? fetchedProfileData.value.bank.cardNumber : "",
+  },
+  provider: {
+    key: "Provider",
+    value: fetchedProfileData.value ? fetchedProfileData.value.company.name : "",
+  },
 });
 const appointmentsData = computed((): Record<AppointmentsKeys, string>[] => {
   const dataArray: Record<AppointmentsKeys, string>[] = [];
@@ -138,6 +142,42 @@ const contactMethodData = ref([
   { contactMethod: "Mobile phone" },
   { contactMethod: "Mail" },
 ]);
+watch(fetchedProfileData, (updatedData: User | null): void => {
+  if (updatedData) {
+    contactInfoData.value = {
+      fullName: {
+        key: "Full Name",
+        value: `${updatedData.firstName} ${updatedData.lastName}`,
+      },
+      phone: {
+        key: "Phone",
+        value: updatedData.phone,
+      },
+      homePhone: {
+        key: "Home Phone",
+        value: "-",
+      },
+      address: {
+        key: "Address",
+        value: updatedData.address.address,
+      },
+      email: {
+        key: "Email",
+        value: updatedData.email,
+      },
+    };
+    insuranceInfoData.value = {
+      memberId: {
+        key: "Member ID",
+        value: updatedData.bank.cardNumber,
+      },
+      provider: {
+        key: "Provider",
+        value: updatedData.company.name,
+      },
+    };
+  }
+})
 
 function getAge(dateString: string): string {
   const today = new Date();
@@ -151,9 +191,34 @@ function getAge(dateString: string): string {
   if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
     age--;
   }
-  
+
   return `${date} (${age})`;
-} 
+}
+
+function getModalTitle(title: string): string {
+  isModalVisible.value = true;
+  modalTitle.value = title;
+  return modalTitle.value;
+}
+
+function submitModal(formData: {
+  register: (field: string, options: any) => any;
+  reset: () => void;
+  valid: boolean;
+} & {
+  [key: string]: FormFieldState;
+}, oldData: Record<string, KeyValueRow>): Record<string, KeyValueRow> {
+  isModalVisible.value = false;
+  for (let prop in oldData) {
+    if (oldData[prop]) {
+      const key = oldData[prop].key;
+      if (formData[key] && typeof formData[key].value === "string") {
+        oldData[prop].value = formData[key].value
+      }
+    }
+  }
+  return oldData;
+}
 
 onMounted(() => {
   profileStore.getProfileData(selectedUserId.value);
@@ -172,7 +237,7 @@ onMounted(() => {
       </div>
     </header>
     <div class="user-body">
-      <ProfileCard title="Contact info" card-type="info" editable>
+      <ProfileCard title="Contact info" card-type="info" editable @set-modal-visible="getModalTitle">
         <ProfileCardInfo :data="contactInfoData" />
       </ProfileCard>
       <ProfileCard title="Personal" card-type="info">
@@ -181,36 +246,34 @@ onMounted(() => {
       <ProfileCard title="Activities" card-type="info">
         <ProfileCardListComponent :data="activitiesData" />
       </ProfileCard>
-      <ProfileCard title="Insurance info" card-type="info" editable>
+      <ProfileCard title="Insurance info" card-type="info" editable @set-modal-visible="getModalTitle">
         <ProfileCardInfo :data="insuranceInfoData" />
       </ProfileCard>
       <ProfileCard title="Appointments" card-type="sheet">
-        <ProfileCardSheet
-          :data="appointmentsData"
-          :columns="[
-            { field: 'date', header: 'Start time' },
-            { field: 'speciality', header: 'Speciality' },
-            { field: 'status', header: 'Status' },
-          ]"
-        />
+        <ProfileCardSheet :data="appointmentsData" :columns="[
+          { field: 'date', header: 'Start time' },
+          { field: 'speciality', header: 'Speciality' },
+          { field: 'status', header: 'Status' },
+        ]" />
       </ProfileCard>
       <ProfileCard title="Feedback" card-type="sheet">
-        <ProfileCardSheet
-          :data="feedbackData"
-          :columns="[
-            { field: 'feedbackTitle', header: 'Case title' },
-            { field: 'feedbackDate', header: 'Date' },
-            { field: 'feedbackStatus', header: 'Status' },
-          ]"
-        />
+        <ProfileCardSheet :data="feedbackData" :columns="[
+          { field: 'feedbackTitle', header: 'Case title' },
+          { field: 'feedbackDate', header: 'Date' },
+          { field: 'feedbackStatus', header: 'Status' },
+        ]" />
       </ProfileCard>
       <ProfileCard title="Contact preferences" card-type="sheet">
-        <ProfileCardSheet
-          :data="contactMethodData"
-          :columns="[{ field: 'contactMethod', header: 'Contact Method' }]"
-        />
+        <ProfileCardSheet :data="contactMethodData" :columns="[{ field: 'contactMethod', header: 'Contact Method' }]" />
       </ProfileCard>
     </div>
+    <Dialog v-model:visible="isModalVisible" modal style="width: 500px;">
+      <template #header>
+        <h3 class="modal__title">Edit {{ modalTitle.toLowerCase() }}</h3>
+      </template>
+      <ModalContent :data="modalTitle == 'Contact info' ? contactInfoData : insuranceInfoData" :title="modalTitle"
+        @update-data="submitModal"></ModalContent>
+    </Dialog>
   </section>
 </template>
 
@@ -255,5 +318,10 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 20px;
   padding: 35px;
+}
+
+.modal__title {
+  font: 500 24px/36px "Poppins";
+  padding: 10px;
 }
 </style>

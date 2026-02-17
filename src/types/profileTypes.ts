@@ -25,7 +25,7 @@ export interface HeaderData {
 
 export interface KeyValueRow {
   key: string;
-  value: string | number;
+  value: string;
 }
 
 export interface ColumnProperties {

@@ -6,6 +6,7 @@ const props = defineProps<{
   cardType: "info" | "list" | "sheet";
   editable?: true;
 }>();
+const emit = defineEmits(["setModalVisible"]);
 </script>
 
 <template>
@@ -19,6 +20,7 @@ const props = defineProps<{
         severity="secondary"
         variant="outlined"
         style="width: 35px; height: 35px"
+        @click="emit('setModalVisible', title)"
       >
         <template #icon> <EditIcon /> </template
       ></Button>
