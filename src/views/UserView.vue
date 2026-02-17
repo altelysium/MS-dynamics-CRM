@@ -39,7 +39,7 @@ const contactInfoData = computed((): Record<ContactInfoKeys, KeyValueRow> => {
     },
     phone: {
       key: "Phone",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.phone : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.phone : "",
     },
     homePhone: {
       key: "Home phone",
@@ -47,11 +47,11 @@ const contactInfoData = computed((): Record<ContactInfoKeys, KeyValueRow> => {
     },
     address: {
       key: "Address",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.address.address : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.address.address : "",
     },
     email: {
       key: "Email",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.email : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.email : "",
     },
   };
 });
@@ -59,11 +59,11 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
   return {
     gender: {
       key: "Gender",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.gender : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.gender.charAt(0).toUpperCase() + fetchedProfileData.value.gender.slice(1) : "",
     },
     birth: {
       key: "Birth (Age)",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.birthDate : "",
+      value: fetchedProfileData.value ? getAge(fetchedProfileData.value.birthDate) : "",
     },
     id: {
       key: "ID",
@@ -79,7 +79,7 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
     },
     emergencyContact: {
       key: "Emergency Contact",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.bank.cardNumber : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.bank.cardNumber : "",
     },
   };
 });
@@ -89,8 +89,9 @@ const activitiesData = computed((): ActivitiesDataKeys[] => {
     const date: string = item.meta.updatedAt.slice(0, 10);
     dataArray.push({
       title: item.title,
-      description: `by ${item.brand}`,
+      description: item.brand ? `${item.brand}` : "Unbranded",
       date: date,
+      category: item.category,
     });
   });
   return dataArray;
@@ -99,11 +100,11 @@ const insuranceInfoData = computed((): Record<InsuranceInfoKeys, KeyValueRow> =>
   return {
     memberId: {
       key: "Member ID",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.bank.cardNumber : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.bank.cardNumber : "",
     },
     provider: {
       key: "Provider",
-      value: fetchedProfileData.value ? fetchedProfileData.value?.company.name : "",
+      value: fetchedProfileData.value ? fetchedProfileData.value.company.name : "",
     },
   };
 });
@@ -113,7 +114,7 @@ const appointmentsData = computed((): Record<AppointmentsKeys, string>[] => {
     const date: string = `${item.meta.updatedAt.slice(0, 10).split("-").reverse().join("-")}${item.meta.updatedAt.slice(11, 16)} AM`;
     dataArray.push({
       date: date,
-      speciality: item.category,
+      speciality: item.category.charAt(0).toUpperCase() + item.category.slice(1),
       status: item.stock % 2 ? "Confirmed" : "Cancelled",
     });
   });
@@ -121,7 +122,7 @@ const appointmentsData = computed((): Record<AppointmentsKeys, string>[] => {
 });
 const feedbackData = computed((): Record<FeedbackKeys, string>[] => {
   const dataArray: Record<FeedbackKeys, string>[] = [];
-  fetchedSingleProductData.value?.reviews?.forEach((item: Review) => {
+  fetchedSingleProductData.value?.reviews.forEach((item: Review) => {
     const date: string = `${item.date.slice(0, 10).split("-").reverse().join("-")}`;
     dataArray.push({
       feedbackTitle: item.reviewerName,
@@ -136,7 +137,23 @@ const contactMethodData = ref([
   { contactMethod: "Email" },
   { contactMethod: "Mobile phone" },
   { contactMethod: "Mail" },
-])
+]);
+
+function getAge(dateString: string): string {
+  const today = new Date();
+  const birthDate = new Date(dateString);
+  let date = dateString.split("-").map(part => part.length === 1 ? "0" + part : part).reverse().join("/");
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  const dayDifference = today.getDate() - birthDate.getDate();
+
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+  
+  return `${date} (${age})`;
+} 
 
 onMounted(() => {
   profileStore.getProfileData(selectedUserId.value);
@@ -155,36 +172,43 @@ onMounted(() => {
       </div>
     </header>
     <div class="user-body">
-      <ProfileCard title="Contact info" card-type="info" modification="editable">
+      <ProfileCard title="Contact info" card-type="info" editable>
         <ProfileCardInfo :data="contactInfoData" />
       </ProfileCard>
       <ProfileCard title="Personal" card-type="info">
         <ProfileCardInfo :data="personalData" />
       </ProfileCard>
-      <ProfileCard title="Activities" card-type="info" modification="replenished">
+      <ProfileCard title="Activities" card-type="info">
         <ProfileCardListComponent :data="activitiesData" />
       </ProfileCard>
-      <ProfileCard title="Insurance info" card-type="info" modification="editable">
+      <ProfileCard title="Insurance info" card-type="info" editable>
         <ProfileCardInfo :data="insuranceInfoData" />
       </ProfileCard>
-      <ProfileCard title="Appointments" card-type="sheet" modification="replenished">
-        <ProfileCardSheet :data="appointmentsData" :columns="[
-          { field: 'date', header: 'Start time' },
-          { field: 'speciality', header: 'Speciality' },
-          { field: 'status', header: 'Status' },
-        ]" />
+      <ProfileCard title="Appointments" card-type="sheet">
+        <ProfileCardSheet
+          :data="appointmentsData"
+          :columns="[
+            { field: 'date', header: 'Start time' },
+            { field: 'speciality', header: 'Speciality' },
+            { field: 'status', header: 'Status' },
+          ]"
+        />
       </ProfileCard>
-      <ProfileCard title="Feedback" card-type="sheet" modification="replenished">
-        <ProfileCardSheet :data="feedbackData" :columns="[
-          { field: 'feedbackTitle', header: 'Case title' },
-          { field: 'feedbackDate', header: 'Date' },
-          { field: 'feedbackStatus', header: 'Status' },
-        ]" />
+      <ProfileCard title="Feedback" card-type="sheet">
+        <ProfileCardSheet
+          :data="feedbackData"
+          :columns="[
+            { field: 'feedbackTitle', header: 'Case title' },
+            { field: 'feedbackDate', header: 'Date' },
+            { field: 'feedbackStatus', header: 'Status' },
+          ]"
+        />
       </ProfileCard>
       <ProfileCard title="Contact preferences" card-type="sheet">
-        <ProfileCardSheet :data="contactMethodData" :columns="[
-          { field: 'contactMethod', header: 'Contact Method' },
-        ]" />
+        <ProfileCardSheet
+          :data="contactMethodData"
+          :columns="[{ field: 'contactMethod', header: 'Contact Method' }]"
+        />
       </ProfileCard>
     </div>
   </section>

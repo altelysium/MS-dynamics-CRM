@@ -12,7 +12,8 @@ export interface ActivitiesDataKeys {
   title: string;
   description: string;
   date: string;
-} 
+  category: string;
+}
 
 export type InsuranceInfoKeys = "memberId" | "provider";
 

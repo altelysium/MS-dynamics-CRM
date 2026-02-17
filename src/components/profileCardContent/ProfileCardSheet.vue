@@ -10,15 +10,31 @@ const props = defineProps<{
 
 <template>
   <DataTable :value="data" scroll-height="300px" scrollable>
-    <Column v-for="(col, index) in columns" :key="col.field" :field="col.field" :header="col.header">
+    <Column
+      v-for="(col, index) in columns"
+      :key="col.field"
+      :field="col.field"
+      :header="col.header"
+    >
+    <template v-if="col.field === 'date'" #body="slotProps">
+      <p>{{ slotProps.data.date.slice(0, 10) }}</p>
+      <p>{{ slotProps.data.date.slice(10) }}</p>
+    </template>
       <template v-if="col.field === 'feedbackStatus' && data[index]" #body="slotProps">
-        <Rating :model-value="Number(slotProps.data.feedbackStatus)" readonly :pt="{
-          onIcon: { style: { color: '#FFC224' } },
-        }" />
+        <Rating
+          :model-value="Number(slotProps.data.feedbackStatus)"
+          readonly
+          :pt="{
+            onIcon: { style: { color: '#FFC224' } },
+          }"
+        />
       </template>
       <template v-if="col.field === 'status'" #body="slotProps">
-        <p :style="slotProps.data.status == 'Cancelled' ? { color: '#FFA41B' } : { color: '#22C04E' }
-          ">
+        <p
+          :style="
+            slotProps.data.status == 'Cancelled' ? { color: '#FFA41B' } : { color: '#22C04E' }
+          "
+        >
           {{ slotProps.data.status }}
         </p>
       </template>
@@ -28,7 +44,7 @@ const props = defineProps<{
           <div class="card-row-toggle-container">
             <p class="card-row-toggle-container__text">DENY</p>
             <ToggleSwitch style="height: 16px" />
-            <p class="card-row-toggle-container__text" style="color: #2BB567;">ALLOW</p>
+            <p class="card-row-toggle-container__text" style="color: #2bb567">ALLOW</p>
           </div>
         </div>
       </template>
@@ -65,6 +81,6 @@ const props = defineProps<{
 
 .card-row-toggle-container__text {
   font: 400 12px/14px "Poppins";
-  color: #B5B5BE;
+  color: #b5b5be;
 }
 </style>

@@ -4,7 +4,7 @@ import EditIcon from "./icons/EditIcon.vue";
 const props = defineProps<{
   title: string;
   cardType: "info" | "list" | "sheet";
-  modification?: "editable" | "replenished";
+  editable?: true;
 }>();
 </script>
 
@@ -13,7 +13,7 @@ const props = defineProps<{
     <div class="card-header">
       <h3 class="card-header__title">{{ title }}</h3>
       <Button
-        v-if="modification === 'editable'"
+        v-if="editable"
         icon="pi pi-pen-to-square"
         aria-label="Edit"
         severity="secondary"
@@ -21,14 +21,6 @@ const props = defineProps<{
         style="width: 35px; height: 35px"
       >
         <template #icon> <EditIcon /> </template
-      ></Button>
-      <Button
-        v-if="modification === 'replenished'"
-        icon="pi pi-plus"
-        aria-label="Add"
-        severity="secondary"
-        variant="outlined"
-        style="width: 35px; height: 35px"
       ></Button>
     </div>
     <slot></slot>
