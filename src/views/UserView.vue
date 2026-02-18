@@ -232,7 +232,7 @@ function submitModal(
 onMounted(() => {
   profileStore.getProfileData(selectedUserId.value);
   profileStore.getProducts();
-  profileStore.getProductReviews(selectedUserId.value);
+  profileStore.getProductReviews(Number(selectedUserId.value));
 });
 </script>
 
