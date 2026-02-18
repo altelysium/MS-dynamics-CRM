@@ -20,7 +20,7 @@ const searchInput = ref<string>("");
       <InputText
         v-model="searchInput"
         placeholder="Type a post ..."
-        style="height: 35px; border: none; font: 400 12px/14px &quot;Poppins&quot;"
+        style="height: 35px; border: none; font: 400 12px/14px Poppins"
       />
       <InputIcon class="pi pi-link" />
     </IconField>

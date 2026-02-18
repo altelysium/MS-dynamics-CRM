@@ -1,31 +1,37 @@
 <script setup lang="ts">
 import { Form } from "@primevue/forms";
 import { useAuthStore } from "../stores/authStore";
-import { InputText, Button } from "primevue";
+import { InputText, Button, Message } from "primevue";
 import { ref } from "vue";
 
 const authStore = useAuthStore();
 let username = ref<string>("");
 let password = ref<string>("");
+let errorMessage = ref<string>("");
+
+async function handleLogin() {
+  try {
+    errorMessage.value = "";
+    await authStore.logIn(username.value, password.value);
+  } catch (err) {
+    if (err) {
+      errorMessage.value = "Invalid username or password";
+    }
+  }
+}
 </script>
 
 <template>
   <section class="login-page">
     <Form class="login-form">
-      <InputText
-        name="username"
-        v-model="username"
-        placeholder="Username"
-        style="max-width: 400px; height: 50px"
-      ></InputText>
-      <InputText
-        name="password"
-        type="password"
-        v-model="password"
-        placeholder="Password"
-        style="max-width: 400px; height: 50px"
-      ></InputText>
-      <Button label="Log In" @click="() => authStore.logIn(username, password)"></Button>
+      <InputText name="username" v-model="username" placeholder="Username" style="max-width: 400px; height: 50px">
+      </InputText>
+      <InputText name="password" type="password" v-model="password" placeholder="Password"
+        style="max-width: 400px; height: 50px"></InputText>
+      <Message v-if="errorMessage" class="error">
+        {{ errorMessage }}
+      </Message>
+      <Button label="Log In" @click="handleLogin"></Button>
     </Form>
   </section>
 </template>
@@ -42,7 +48,6 @@ let password = ref<string>("");
 .login-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
   padding: 50px;
   background-color: #ffffff;

@@ -8,6 +8,7 @@ export const useAuthStore = defineStore("auth", () => {
   const stringifiedAuthData = computed<string | null>(() => localStorage.getItem("loggedUser"));
   let loggedUserData = ref<LoggedUser | null>(stringifiedAuthData.value ? JSON.parse(stringifiedAuthData.value) : null);
   const isAuth = computed<boolean>(() => !!loggedUserData.value);
+
   async function logIn(username: string, password: string): Promise<LoggedUser> {
     const data: LoggedUser = await getTokens(username, password);
     loggedUserData.value = { ...data };
@@ -15,12 +16,14 @@ export const useAuthStore = defineStore("auth", () => {
       localStorage.setItem("loggedUser", JSON.stringify(loggedUserData.value));
       router.push({ name: "home" });
     }
-    return loggedUserData.value;
+    return data;
   }
+  
   function logout(): void {
     localStorage.removeItem("loggedUser");
     loggedUserData.value = null;
     router.push({ name: "login" });
   }
+
   return { logIn, isAuth, loggedUserData, logout };
 });

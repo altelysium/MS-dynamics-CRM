@@ -10,7 +10,7 @@ import getSingleProductData from "../services/api/getProductReviews.service";
 export const useProfileStore = defineStore("profile", () => {
   const route = useRoute();
   let fetchedProfileData = ref<User | null>(null);
-  let fetchedProductsData = ref<{ products: Product[] } | null>(null);
+  let fetchedProductsData = ref<{ products: Product[], total: number } | null>(null);
   let fetchedSingleProductData = ref<Product | null>(null);
   let selectedUserId = route.params["id"]
     ? ref<number | string>(route.params["id"] as string)
@@ -20,13 +20,13 @@ export const useProfileStore = defineStore("profile", () => {
     fetchedProfileData.value = { ...data };
     return data;
   }
-  async function getProducts(): Promise<{ products: Product[] }> {
-    const data: { products: Product[] } = await getProductsData();
+  async function getProducts(): Promise<{ products: Product[], total: number }> {
+    const data: { products: Product[], total: number } = await getProductsData();
     fetchedProductsData.value = { ...data };
     return data;
   }
-  async function getProductReviews(id: number | string): Promise<Product> {
-    const data: Product = await getSingleProductData(id);
+  async function getProductReviews(id: number): Promise<Product> {
+    const data: Product = await getSingleProductData(fetchedProductsData.value && id > fetchedProductsData.value.total ? fetchedProductsData.value.total : id);
     fetchedSingleProductData.value = { ...data };
     return data;
   }

@@ -3,7 +3,6 @@ import type { User } from "../../types/userTypes";
 
 export default async function getUserData(id: number | string): Promise<User> {
   const apiBaseUrl: string = import.meta.env["VITE_BASE_API_URL"];
-  const response = await axios.get<User>(`${apiBaseUrl}users/${id}`);
-  const data: User = response.data;
+  const { data } = await axios.get<User>(`${apiBaseUrl}users/${id}`);
   return data;
 }

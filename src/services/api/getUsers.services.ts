@@ -6,9 +6,8 @@ export default async function getUsers(
   endpoint: string,
 ): Promise<UsersResponseData> {
   const apiBaseUrl: string = import.meta.env["VITE_BASE_API_URL"];
-  const response = await axios.get<UsersResponseData>(`${apiBaseUrl}${endpoint}`, {
+  const { data } = await axios.get<UsersResponseData>(`${apiBaseUrl}${endpoint}`, {
     params: queryParams,
   });
-  const data: UsersResponseData = response.data;
   return data;
 }
