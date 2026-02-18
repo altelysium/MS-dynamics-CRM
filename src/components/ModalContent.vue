@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { KeyValueRow } from '../types/profileTypes';
-import { Form } from '@primevue/forms';
-import { Button, InputText } from 'primevue';
-import { ref } from 'vue';
+import type { KeyValueRow } from "../types/profileTypes";
+import { Form } from "@primevue/forms";
+import { Button, InputText } from "primevue";
+import { ref } from "vue";
 
 const emit = defineEmits(["updateData"]);
 const props = defineProps<{
@@ -11,12 +11,7 @@ const props = defineProps<{
 }>();
 
 function getValues(data: Record<string, KeyValueRow>): Record<string, string> {
-  return Object.fromEntries(
-    Object.entries(data).map(([, obj]) => [
-      obj.key,
-      obj.value
-    ])
-  );
+  return Object.fromEntries(Object.entries(data).map(([, obj]) => [obj.key, obj.value]));
 }
 const dataValues = ref<Record<string, string>>(getValues(props.data));
 </script>

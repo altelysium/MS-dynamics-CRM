@@ -20,7 +20,7 @@ const searchInput = ref<string>("");
       <InputText
         v-model="searchInput"
         placeholder="Type a post ..."
-        style="height: 35px; border: none; font: 400 12px/14px 'Poppins'"
+        style="height: 35px; border: none; font: 400 12px/14px &quot;Poppins&quot;"
       />
       <InputIcon class="pi pi-link" />
     </IconField>
@@ -87,7 +87,9 @@ const searchInput = ref<string>("");
 
 .profile-card-list-element-info__description,
 .profile-card-list-element__date {
-  font: 400 12px/14px "Roboto", sans-serif;
+  font:
+    400 12px/14px "Roboto",
+    sans-serif;
   color: #818181;
 }
 

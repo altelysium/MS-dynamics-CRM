@@ -71,7 +71,8 @@ onBeforeMount((): void => {
         label="Filter"
         variant="outlined"
         rounded
-        style="color: #2bb567; border-color: #ececed; font-family: 'Roboto', sans-serif;"
+        style="color: #2bb567; border-color: #ececed; font-family: Roboto, sans-serif"
+        :pt="{label: {style: {font: '400 14px/16px Roboto, sans-serif'}}}"
         @click="togglePopover"
       >
         <template #icon>
@@ -111,10 +112,5 @@ onBeforeMount((): void => {
 
 .home-page__title {
   font: 600 24px/36px "Poppins";
-}
-
-.p-button-label {
-  font-weight: 400 !important;
-  font-size: 14px;
 }
 </style>

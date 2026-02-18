@@ -1,5 +1,58 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Form } from "@primevue/forms";
+import { useAuthStore } from "../stores/authStore";
+import { InputText, Button } from "primevue";
+import { ref } from "vue";
 
-<template></template>
+const authStore = useAuthStore();
+let username = ref<string>("");
+let password = ref<string>("");
+</script>
 
-<style></style>
+<template>
+  <section class="login-page">
+    <Form class="login-form">
+      <InputText
+        name="username"
+        v-model="username"
+        placeholder="Username"
+        style="max-width: 400px; height: 50px"
+      ></InputText>
+      <InputText
+        name="password"
+        type="password"
+        v-model="password"
+        placeholder="Password"
+        style="max-width: 400px; height: 50px"
+      ></InputText>
+      <Button label="Log In" @click="() => authStore.logIn(username, password)"></Button>
+    </Form>
+  </section>
+</template>
+
+<style scoped>
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  height: calc(100vh - 118px);
+  max-width: 1170px;
+  box-shadow: 0px 4px 10px 0px #00000026;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 100px;
+  background-color: #f8f8f8;
+  border: 1px #ececed solid;
+  border-radius: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+</style>

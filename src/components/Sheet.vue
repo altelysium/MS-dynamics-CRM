@@ -93,6 +93,7 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
           severity="success"
           variant="text"
           style="display: flex; vertical-align: middle; border: 0"
+          :pt="{label: {style: {font: '500 14px/21px Poppins'}}}"
         >
           <template #icon>
             <ScheduleIcon />
@@ -125,7 +126,9 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
 }
 
 .td-info__description {
-  font: 500 12px/18px "Roboto", sans-serif;
+  font:
+    500 12px/18px "Roboto",
+    sans-serif;
   color: #818181;
 }
 

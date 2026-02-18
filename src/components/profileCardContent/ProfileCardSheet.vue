@@ -16,10 +16,10 @@ const props = defineProps<{
       :field="col.field"
       :header="col.header"
     >
-    <template v-if="col.field === 'date'" #body="slotProps">
-      <p style="padding-bottom: 5px;">{{ slotProps.data.date.slice(0, 10) }}</p>
-      <p>{{ slotProps.data.date.slice(10) }}</p>
-    </template>
+      <template v-if="col.field === 'date'" #body="slotProps">
+        <p style="padding-bottom: 5px">{{ slotProps.data.date.slice(0, 10) }}</p>
+        <p>{{ slotProps.data.date.slice(10) }}</p>
+      </template>
       <template v-if="col.field === 'feedbackStatus' && data[index]" #body="slotProps">
         <Rating
           :model-value="Number(slotProps.data.feedbackStatus)"
@@ -61,7 +61,9 @@ const props = defineProps<{
 }
 
 :deep(.p-datatable-tbody > tr > td) {
-  font: 400 12px/14px "Roboto", sans-serif;
+  font:
+    400 12px/14px "Roboto",
+    sans-serif;
   color: #303030;
 }
 
@@ -80,7 +82,9 @@ const props = defineProps<{
 }
 
 .card-row-toggle-container__text {
-  font: 400 12px/14px "Roboto", sans-serif;
+  font:
+    400 12px/14px "Roboto",
+    sans-serif;
   color: #b5b5be;
 }
 </style>
