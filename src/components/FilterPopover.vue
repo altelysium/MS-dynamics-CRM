@@ -138,4 +138,10 @@ const togglePopover = (e: PointerEvent): void => popover.value?.toggle(e);
 :deep(.p-select-label) {
   font: 400 14px/14px "Poppins";
 }
+
+@media ( max-width: 640px) {
+  .popover {
+    width: 300px;
+  }
+}
 </style>

@@ -33,11 +33,27 @@ const dataValues = ref<Record<string, string>>(getValues(props.data));
   flex-direction: column;
   gap: 20px;
   font: 400 20px/30px "Poppins";
+  width: 500px;
 }
 
 .modal-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .modal {
+    padding: 0;
+    width: 300px;
+  }
+
+  .modal-row__title {
+    font: 400 14px/21px "Poppins";
+  }
+
+  .modal-row__input {
+    width: 200px;
+  }
 }
 </style>

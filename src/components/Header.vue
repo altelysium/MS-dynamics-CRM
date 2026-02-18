@@ -18,15 +18,15 @@ function submitLogout(e: PointerEvent): void {
 
 <template>
   <header class="header">
-    <div class="pi pi-bars" style="color: #848485; font-size: 18px"></div>
+    <Button icon="pi pi-bars" style="color: #848485; background-color: #FFFFFF; border: none; width: 24px; height: 24px;"></Button>
     <RouterLink :to="{ name: 'home' }" style="text-decoration: none; color: inherit; flex-grow: 2">
       <div class="header__logo">
         <LogoIcon />
         <h1 class="header__logo-title">HCare</h1>
       </div>
     </RouterLink>
-    <div class="pi pi-bell" style="color: #848485; font-size: 24px"></div>
-    <Button @click="togglePopover" style="background-color: #FFFFFF; border: none; outline: none;">
+    <Button icon="pi pi-bell" style="color: #848485; background-color: #FFFFFF; border: none; width: 24px; height: 24px;"></Button>
+    <Button @click="togglePopover" style="background-color: #FFFFFF; border: none; outline: none; padding: 0;">
     <img v-if="isAuth" :src="loggedUserData?.image" :alt="loggedUserData?.firstName + ' ' + loggedUserData?.lastName" class="header__avatar">
     </Button>
     <Popover ref="popover">
@@ -73,5 +73,11 @@ function submitLogout(e: PointerEvent): void {
 
 .header-popover__title {
   font: 500 14px/24px "Poppins";
+}
+
+@media (max-width: 1280px) {
+  .header {
+    padding: 0 2.5%;
+  }
 }
 </style>

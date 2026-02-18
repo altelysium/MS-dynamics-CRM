@@ -24,4 +24,5 @@ router.beforeEach(async (to, from) => {
   if (isAuth.value && to.name === "login") {
     return from;
   }
+  return;
 });

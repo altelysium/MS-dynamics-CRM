@@ -46,4 +46,18 @@ const emit = defineEmits(["setModalVisible"]);
 .card-header__title {
   font: 600 16px/24px "Poppins";
 }
+
+@media (max-width: 1280px) {
+.card {
+  width: auto;
+  max-width: 100%;
+  min-width: 355px;
+}
+}
+
+@media (max-width: 480px) {
+.card {
+  min-width: auto;
+}
+}
 </style>

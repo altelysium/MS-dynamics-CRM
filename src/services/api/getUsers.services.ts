@@ -9,6 +9,6 @@ export default async function getUsers(
   const response = await axios.get<UsersResponseData>(`${apiBaseUrl}${endpoint}`, {
     params: queryParams,
   });
-  const data: UsersResponseData = await response.data;
+  const data: UsersResponseData = response.data;
   return data;
 }

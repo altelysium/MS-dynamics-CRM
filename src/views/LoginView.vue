@@ -37,10 +37,6 @@ let password = ref<string>("");
   align-items: center;
   margin: 0 auto;
   height: calc(100vh - 118px);
-  max-width: 1170px;
-  box-shadow: 0px 4px 10px 0px #00000026;
-  background-color: #ffffff;
-  border-radius: 10px;
 }
 
 .login-form {
@@ -48,11 +44,17 @@ let password = ref<string>("");
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding: 100px;
-  background-color: #f8f8f8;
+  padding: 50px;
+  background-color: #ffffff;
   border: 1px #ececed solid;
   border-radius: 16px;
   max-width: 400px;
   margin: 0 auto;
+}
+
+@media (max-width: 1280px) {
+  .login-page {
+    width: 95%;
+  }
 }
 </style>

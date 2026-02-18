@@ -66,7 +66,7 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
       key: "Gender",
       value: fetchedProfileData.value
         ? fetchedProfileData.value.gender.charAt(0).toUpperCase() +
-          fetchedProfileData.value.gender.slice(1)
+        fetchedProfileData.value.gender.slice(1)
         : "",
     },
     birth: {
@@ -139,7 +139,7 @@ const feedbackData = computed((): Record<FeedbackKeys, string>[] => {
   return dataArray;
 });
 
-const contactMethodData = ref([
+const contactMethodData = ref<{ contactMethod: string }[]>([
   { contactMethod: "Email" },
   { contactMethod: "Mobile Phone" },
   { contactMethod: "Mail" },
@@ -182,17 +182,17 @@ watch(fetchedProfileData, (updatedData: User | null): void => {
 });
 
 function getAge(dateString: string): string {
-  const today = new Date();
-  const birthDate = new Date(dateString);
-  let date = dateString
+  const today: Date = new Date();
+  const birthDate: Date = new Date(dateString);
+  let date: string = dateString
     .split("-")
     .map((part) => (part.length === 1 ? "0" + part : part))
     .reverse()
     .join("/");
 
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDifference = today.getMonth() - birthDate.getMonth();
-  const dayDifference = today.getDate() - birthDate.getDate();
+  let age: number = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference: number = today.getMonth() - birthDate.getMonth();
+  const dayDifference: number = today.getDate() - birthDate.getDate();
 
   if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
     age--;
@@ -220,7 +220,7 @@ function submitModal(
   isModalVisible.value = false;
   for (let prop in oldData) {
     if (oldData[prop]) {
-      const key = oldData[prop].key;
+      const key: string = oldData[prop].key;
       if (formData[key] && typeof formData[key].value === "string") {
         oldData[prop].value = formData[key].value;
       }
@@ -246,12 +246,7 @@ onMounted(() => {
       </div>
     </header>
     <div class="user-body">
-      <ProfileCard
-        title="Contact info"
-        card-type="info"
-        editable
-        @set-modal-visible="getModalTitle"
-      >
+      <ProfileCard title="Contact info" card-type="info" editable @set-modal-visible="getModalTitle">
         <ProfileCardInfo :data="contactInfoData" />
       </ProfileCard>
       <ProfileCard title="Personal" card-type="info">
@@ -260,50 +255,33 @@ onMounted(() => {
       <ProfileCard title="Activities" card-type="info">
         <ProfileCardListComponent :data="activitiesData" />
       </ProfileCard>
-      <ProfileCard
-        title="Insurance info"
-        card-type="info"
-        editable
-        @set-modal-visible="getModalTitle"
-      >
+      <ProfileCard title="Insurance info" card-type="info" editable @set-modal-visible="getModalTitle">
         <ProfileCardInfo :data="insuranceInfoData" />
       </ProfileCard>
       <ProfileCard title="Appointments" card-type="sheet">
-        <ProfileCardSheet
-          :data="appointmentsData"
-          :columns="[
-            { field: 'date', header: 'Start time' },
-            { field: 'speciality', header: 'Speciality' },
-            { field: 'status', header: 'Status' },
-          ]"
-        />
+        <ProfileCardSheet :data="appointmentsData" :columns="[
+          { field: 'date', header: 'Start time' },
+          { field: 'speciality', header: 'Speciality' },
+          { field: 'status', header: 'Status' },
+        ]" />
       </ProfileCard>
       <ProfileCard title="Feedback" card-type="sheet">
-        <ProfileCardSheet
-          :data="feedbackData"
-          :columns="[
-            { field: 'feedbackTitle', header: 'Case title' },
-            { field: 'feedbackDate', header: 'Date' },
-            { field: 'feedbackStatus', header: 'Status' },
-          ]"
-        />
+        <ProfileCardSheet :data="feedbackData" :columns="[
+          { field: 'feedbackTitle', header: 'Case title' },
+          { field: 'feedbackDate', header: 'Date' },
+          { field: 'feedbackStatus', header: 'Status' },
+        ]" />
       </ProfileCard>
       <ProfileCard title="Contact preferences" card-type="sheet">
-        <ProfileCardSheet
-          :data="contactMethodData"
-          :columns="[{ field: 'contactMethod', header: 'Contact Method' }]"
-        />
+        <ProfileCardSheet :data="contactMethodData" :columns="[{ field: 'contactMethod', header: 'Contact Method' }]" />
       </ProfileCard>
     </div>
-    <Dialog v-model:visible="isModalVisible" modal style="width: 500px">
+    <Dialog v-model:visible="isModalVisible" modal>
       <template #header>
         <h3 class="modal__title">Edit {{ modalTitle.toLowerCase() }}</h3>
       </template>
-      <ModalContent
-        :data="modalTitle == 'Contact info' ? contactInfoData : insuranceInfoData"
-        :title="modalTitle"
-        @update-data="submitModal"
-      ></ModalContent>
+      <ModalContent :data="modalTitle == 'Contact info' ? contactInfoData : insuranceInfoData" :title="modalTitle"
+        @update-data="submitModal"></ModalContent>
     </Dialog>
   </section>
 </template>
@@ -354,5 +332,33 @@ onMounted(() => {
 .modal__title {
   font: 500 24px/36px "Poppins";
   padding: 10px;
+}
+
+@media (max-width: 1280px) {
+  .user-page {
+    width: 95%;
+  }
+
+  .user-body {
+    height: 1240px;
+  }
+}
+
+@media (max-width: 860px) {
+  .user-body {
+    height: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal__title {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-body {
+    padding: 20px;
+  }
 }
 </style>

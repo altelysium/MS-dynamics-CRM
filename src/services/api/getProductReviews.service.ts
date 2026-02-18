@@ -4,6 +4,6 @@ import type { Product } from "../../types/profileTypes";
 export default async function getSingleProductData(id: number | string): Promise<Product> {
   const apiBaseUrl: string = import.meta.env["VITE_BASE_API_URL"];
   const response = await axios.get<Product>(`${apiBaseUrl}products/${id}`);
-  const data: Product = await response.data;
+  const data: Product = response.data;
   return data;
 }

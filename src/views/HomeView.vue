@@ -113,4 +113,10 @@ onBeforeMount((): void => {
 .home-page__title {
   font: 600 24px/36px "Poppins";
 }
+
+@media (max-width: 1280px) {
+.home-page {
+  width: 95%;
+}
+}
 </style>

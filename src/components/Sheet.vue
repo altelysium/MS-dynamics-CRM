@@ -57,22 +57,13 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
 </script>
 
 <template>
-  <DataTable
-    :value="sheetData"
-    selectionMode="single"
-    dataKey="id"
-    :loading="isLoading"
-    paginator
-    lazy
-    :totalRecords="total"
-    :rows="localRows"
-    :first="localFirst"
-    @page="updatePage"
-    @update:rows="updateLimit"
-    @row-select="selectUser"
-    :rowsPerPageOptions="[10, 20, 30]"
-    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0"
-  >
+  <DataTable :value="sheetData" selectionMode="single" dataKey="id" :loading="isLoading" paginator lazy
+    :totalRecords="total" :rows="localRows" :first="localFirst" @page="updatePage" @update:rows="updateLimit"
+    @row-select="selectUser" :rowsPerPageOptions="[10, 20, 30]" :paginatorTemplate="{
+        '480px': 'PrevPageLink CurrentPageReport  NextPageLink RowsPerPageDropdown',
+        default: 'FirstPageLink PageLinks LastPageLink RowsPerPageDropdown'
+    }"
+    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0;;">
     <Column field="name" header="Name">
       <template #body="slotProps">
         <div class="column-name-wrapper">
@@ -88,13 +79,9 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
     <Column field="availableHours" header="Available hours"></Column>
     <Column field="schedule" header="Schedule an appointment">
       <template #body="slotProps">
-        <Button
-          :label="slotProps.data.schedule"
-          severity="success"
-          variant="text"
+        <Button :label="slotProps.data.schedule" severity="success" variant="text"
           style="display: flex; vertical-align: middle; border: 0"
-          :pt="{label: {style: {font: '500 14px/21px Poppins'}}}"
-        >
+          :pt="{ label: { style: { font: '500 14px/21px Poppins' } } }">
           <template #icon>
             <ScheduleIcon />
           </template>
@@ -154,5 +141,17 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
 :deep(.p-paginator-page),
 :deep(.p-select) {
   font: 400 14px/21px "Poppins";
+}
+
+@media (max-width: 1024px) {
+  .td__img {
+    width: 39px;
+    height: 39px;
+  }
+
+  :deep(.p-datatable-tbody > tr > td) {
+    font: 400 14px/16px "Poppins";
+    padding: 9px 12px;
+  }
 }
 </style>

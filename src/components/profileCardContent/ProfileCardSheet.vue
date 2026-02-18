@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <DataTable :value="data" scroll-height="300px" scrollable>
+  <DataTable :value="data" scroll-height="300px" scroll-width="420px" scrollable>
     <Column
       v-for="(col, index) in columns"
       :key="col.field"
