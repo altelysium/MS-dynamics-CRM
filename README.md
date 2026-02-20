@@ -87,6 +87,6 @@ Make sure you have installed:
    ```code
    http://localhost:5173
    ```
-   For authorization use this credintials:
-   Login: emilys
-   Password: emilyspass
+   For authorization use this credentials:
+   - Login: emilys
+   - Password: emilyspass
