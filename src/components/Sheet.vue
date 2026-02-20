@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
-import { router } from "../router/routes";
+import { router } from "../router/router";
 import type { sheetRow } from "../types/userTypes";
 import { DataTable, Column, type DataTablePageEvent, type DataTableRowSelectEvent, Button } from "primevue";
 import ScheduleIcon from "./icons/ScheduleIcon.vue";

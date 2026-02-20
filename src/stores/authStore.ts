@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import type { LoggedUser } from "../types/authTypes";
 import { getTokens } from "../services/api/getTokens.service";
-import { router } from "../router/routes";
+import { router } from "../router/router";
 
 export const useAuthStore = defineStore("auth", () => {
   const stringifiedAuthData = computed<string | null>(() => localStorage.getItem("loggedUser"));
