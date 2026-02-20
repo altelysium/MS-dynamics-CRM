@@ -4,6 +4,7 @@ import { Form } from "@primevue/forms";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
+import type { Filters } from "../types/userTypes";
 
 const usersStore = useUsersStore();
 let { queryParams } = storeToRefs(usersStore);
@@ -11,23 +12,6 @@ let { queryParams } = storeToRefs(usersStore);
 const popover = ref<InstanceType<typeof Popover> | null>(null);
 defineExpose({ popover });
 const emit = defineEmits<{ (event: "setPageResetter"): number }>();
-
-interface Filters {
-  depatmentsArray: [
-    "Engineering",
-    "Support",
-    "Research and Development",
-    "Human Resources",
-    "Product Management",
-    "Marketing",
-    "Services",
-    "Accounting",
-    "Training",
-    "Legal",
-    "Sales",
-  ];
-  depatmentsValue: (typeof filters.depatmentsArray)[number] | "";
-}
 
 const filters: Filters = {
   depatmentsArray: [
@@ -139,7 +123,7 @@ const togglePopover = (e: PointerEvent): void => popover.value?.toggle(e);
   font: 400 14px/14px "Poppins";
 }
 
-@media ( max-width: 640px) {
+@media (max-width: 640px) {
   .popover {
     width: 300px;
   }

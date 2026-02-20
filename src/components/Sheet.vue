@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { DataTable, Column, type DataTablePageEvent, type DataTableRowSelectEvent } from "primevue";
-import type { sheetRow } from "../views/HomeView.vue";
-import ScheduleIcon from "./icons/ScheduleIcon.vue";
-import { Button } from "primevue";
+import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "../stores/usersStore";
-import { ref, watch } from "vue";
 import { router } from "../router/routes";
-import { useProfileStore } from "../stores/profileStore";
+import type { sheetRow } from "../types/userTypes";
+import { DataTable, Column, type DataTablePageEvent, type DataTableRowSelectEvent, Button } from "primevue";
+import ScheduleIcon from "./icons/ScheduleIcon.vue";
 
 const props = defineProps<{
   sheetData: sheetRow[];
@@ -18,12 +16,9 @@ const props = defineProps<{
 }>();
 
 const usersStore = useUsersStore();
-const profileStore = useProfileStore();
 let { queryParams, sheetPageResetter } = storeToRefs(usersStore);
-let { selectedUserId } = storeToRefs(profileStore);
-
-let localFirst = ref<number>(props.first);
-let localRows = ref<number>(props.rows);
+const localFirst = ref<number>(props.first);
+const localRows = ref<number>(props.rows);
 
 watch(sheetPageResetter, () => {
   if (typeof sheetPageResetter.value === "number") {
@@ -51,19 +46,31 @@ function updateLimit(rows: number): void {
 }
 
 function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
-  selectedUserId.value = e.data.id;
-  router.push({ path: "/user/" + selectedUserId.value });
+  router.push({ path: "/user/" + e.data.id });
 }
 </script>
 
 <template>
-  <DataTable :value="sheetData" selectionMode="single" dataKey="id" :loading="isLoading" paginator lazy
-    :totalRecords="total" :rows="localRows" :first="localFirst" @page="updatePage" @update:rows="updateLimit"
-    @row-select="selectUser" :rowsPerPageOptions="[10, 20, 30]" :paginatorTemplate="{
-        '480px': 'PrevPageLink CurrentPageReport  NextPageLink RowsPerPageDropdown',
-        default: 'FirstPageLink PageLinks LastPageLink RowsPerPageDropdown'
+  <DataTable
+    :value="sheetData"
+    selectionMode="single"
+    dataKey="id"
+    :loading="isLoading"
+    paginator
+    lazy
+    :totalRecords="total"
+    :rows="localRows"
+    :first="localFirst"
+    @page="updatePage"
+    @update:rows="updateLimit"
+    @row-select="selectUser"
+    :rowsPerPageOptions="[10, 20, 30]"
+    :paginatorTemplate="{
+      '480px': 'PrevPageLink CurrentPageReport  NextPageLink RowsPerPageDropdown',
+      default: 'FirstPageLink PageLinks LastPageLink RowsPerPageDropdown',
     }"
-    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0;;">
+    style="border: 1px #ececed solid; border-radius: 12px; padding: 16px 0"
+  >
     <Column field="name" header="Name">
       <template #body="slotProps">
         <div class="column-name-wrapper">
@@ -79,9 +86,13 @@ function selectUser(e: DataTableRowSelectEvent<sheetRow>): void {
     <Column field="availableHours" header="Available hours"></Column>
     <Column field="schedule" header="Schedule an appointment">
       <template #body="slotProps">
-        <Button :label="slotProps.data.schedule" severity="success" variant="text"
+        <Button
+          :label="slotProps.data.schedule"
+          severity="success"
+          variant="text"
           style="display: flex; vertical-align: middle; border: 0"
-          :pt="{ label: { style: { font: '500 14px/21px Poppins' } } }">
+          :pt="{ label: { style: { font: '500 14px/21px Poppins' } } }"
+        >
           <template #icon>
             <ScheduleIcon />
           </template>

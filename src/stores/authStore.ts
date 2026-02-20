@@ -6,19 +6,21 @@ import { router } from "../router/routes";
 
 export const useAuthStore = defineStore("auth", () => {
   const stringifiedAuthData = computed<string | null>(() => localStorage.getItem("loggedUser"));
-  let loggedUserData = ref<LoggedUser | null>(stringifiedAuthData.value ? JSON.parse(stringifiedAuthData.value) : null);
+  const loggedUserData = ref<LoggedUser | null>(
+    stringifiedAuthData.value ? JSON.parse(stringifiedAuthData.value) : null,
+  );
   const isAuth = computed<boolean>(() => !!loggedUserData.value);
 
   async function logIn(username: string, password: string): Promise<LoggedUser> {
     const data: LoggedUser = await getTokens(username, password);
-    loggedUserData.value = { ...data };
+    loggedUserData.value = data;
     if (loggedUserData.value) {
       localStorage.setItem("loggedUser", JSON.stringify(loggedUserData.value));
       router.push({ name: "home" });
     }
     return data;
   }
-  
+
   function logout(): void {
     localStorage.removeItem("loggedUser");
     loggedUserData.value = null;

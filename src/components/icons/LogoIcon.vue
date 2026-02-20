@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <svg
     class="header__logo-logo"
@@ -16,5 +14,3 @@
     />
   </svg>
 </template>
-
-<style></style>

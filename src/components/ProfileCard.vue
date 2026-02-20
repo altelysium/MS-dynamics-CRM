@@ -3,10 +3,9 @@ import { Button } from "primevue";
 import EditIcon from "./icons/EditIcon.vue";
 const props = defineProps<{
   title: string;
-  cardType: "info" | "list" | "sheet";
   editable?: true;
 }>();
-const emit = defineEmits(["setModalVisible"]);
+const emit = defineEmits<{ (event: "setModalVisible", title: string): string } >();
 </script>
 
 <template>
@@ -48,16 +47,16 @@ const emit = defineEmits(["setModalVisible"]);
 }
 
 @media (max-width: 1280px) {
-.card {
-  width: auto;
-  max-width: 100%;
-  min-width: 355px;
-}
+  .card {
+    width: auto;
+    max-width: 100%;
+    min-width: 355px;
+  }
 }
 
 @media (max-width: 480px) {
-.card {
-  min-width: auto;
-}
+  .card {
+    min-width: auto;
+  }
 }
 </style>

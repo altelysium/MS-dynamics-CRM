@@ -3,7 +3,7 @@ import { onBeforeMount, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { Button } from "primevue";
 import { useUsersStore } from "../stores/usersStore";
-import type { User } from "../types/userTypes";
+import type { sheetRow, User } from "../types/userTypes";
 import Sheet from "../components/Sheet.vue";
 import FilterPopover from "../components/FilterPopover.vue";
 import FilterIcon from "../components/icons/FilterIcon.vue";
@@ -11,19 +11,8 @@ import FilterIcon from "../components/icons/FilterIcon.vue";
 const usersStore = useUsersStore();
 let { users, fetchedData, sheetPageResetter, queryParams } = storeToRefs(usersStore);
 
-export interface sheetRow {
-  id: number;
-  name: string;
-  cityCountry: string;
-  availableHours: "8:00 - 18:00" | "12:00 - 22:00";
-  schedule: "Book date";
-  confirmation: "Confirmed" | "Not confirmed";
-  specs: string;
-  image: string;
-}
-
 const sheetData = ref<sheetRow[]>([]);
-let isLoading = ref<boolean>(false);
+const isLoading = ref<boolean>(false);
 const FilterPopoverRef = ref<InstanceType<typeof FilterPopover> | null>(null);
 
 function setSheetData(data: User[]): sheetRow[] {
@@ -72,7 +61,7 @@ onBeforeMount((): void => {
         variant="outlined"
         rounded
         style="color: #2bb567; border-color: #ececed; font-family: Roboto, sans-serif"
-        :pt="{label: {style: {font: '400 14px/16px Roboto, sans-serif'}}}"
+        :pt="{ label: { style: { font: '400 14px/16px Roboto, sans-serif' } } }"
         @click="togglePopover"
       >
         <template #icon>
@@ -115,8 +104,8 @@ onBeforeMount((): void => {
 }
 
 @media (max-width: 1280px) {
-.home-page {
-  width: 95%;
-}
+  .home-page {
+    width: 95%;
+  }
 }
 </style>

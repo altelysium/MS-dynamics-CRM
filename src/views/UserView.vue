@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../stores/profileStore";
 import { computed, onMounted, ref, watch } from "vue";
+import { Dialog } from "primevue";
 import type {
   ContactInfoKeys,
   HeaderData,
@@ -13,14 +14,13 @@ import type {
   FeedbackKeys,
   Review,
   ActivitiesDataKeys,
+  FormDataValue,
 } from "../types/profileTypes";
-import ProfileCard from "../components/ProfileCard.vue";
-import ProfileCardInfo from "../components/profileCardContent/ProfileCardInfo.vue";
-import ProfileCardSheet from "../components/profileCardContent/ProfileCardSheet.vue";
-import ProfileCardListComponent from "../components/profileCardContent/ProfileCardListComponent.vue";
-import { Dialog } from "primevue";
-import { type FormFieldState } from "@primevue/forms";
 import type { User } from "../types/userTypes";
+import ProfileCard from "../components/ProfileCard.vue";
+import ProfileCardInfo from "../components/profileCard/ProfileCardInfo.vue";
+import ProfileCardSheet from "../components/profileCard/ProfileCardSheet.vue";
+import ProfileCardListComponent from "../components/profileCard/ProfileCardList.vue";
 import ModalContent from "../components/ModalContent.vue";
 
 const profileStore = useProfileStore();
@@ -66,7 +66,7 @@ const personalData = computed((): Record<PersonalDataKeys, KeyValueRow> => {
       key: "Gender",
       value: fetchedProfileData.value
         ? fetchedProfileData.value.gender.charAt(0).toUpperCase() +
-        fetchedProfileData.value.gender.slice(1)
+          fetchedProfileData.value.gender.slice(1)
         : "",
     },
     birth: {
@@ -208,13 +208,7 @@ function getModalTitle(title: string): string {
 }
 
 function submitModal(
-  formData: {
-    register: (field: string, options: any) => any;
-    reset: () => void;
-    valid: boolean;
-  } & {
-    [key: string]: FormFieldState;
-  },
+  formData: FormData & FormDataValue,
   oldData: Record<string, KeyValueRow>,
 ): Record<string, KeyValueRow> {
   isModalVisible.value = false;
@@ -246,7 +240,12 @@ onMounted(() => {
       </div>
     </header>
     <div class="user-body">
-      <ProfileCard title="Contact info" card-type="info" editable @set-modal-visible="getModalTitle">
+      <ProfileCard
+        title="Contact info"
+        card-type="info"
+        editable
+        @set-modal-visible="getModalTitle"
+      >
         <ProfileCardInfo :data="contactInfoData" />
       </ProfileCard>
       <ProfileCard title="Personal" card-type="info">
@@ -255,33 +254,50 @@ onMounted(() => {
       <ProfileCard title="Activities" card-type="info">
         <ProfileCardListComponent :data="activitiesData" />
       </ProfileCard>
-      <ProfileCard title="Insurance info" card-type="info" editable @set-modal-visible="getModalTitle">
+      <ProfileCard
+        title="Insurance info"
+        card-type="info"
+        editable
+        @set-modal-visible="getModalTitle"
+      >
         <ProfileCardInfo :data="insuranceInfoData" />
       </ProfileCard>
       <ProfileCard title="Appointments" card-type="sheet">
-        <ProfileCardSheet :data="appointmentsData" :columns="[
-          { field: 'date', header: 'Start time' },
-          { field: 'speciality', header: 'Speciality' },
-          { field: 'status', header: 'Status' },
-        ]" />
+        <ProfileCardSheet
+          :data="appointmentsData"
+          :columns="[
+            { field: 'date', header: 'Start time' },
+            { field: 'speciality', header: 'Speciality' },
+            { field: 'status', header: 'Status' },
+          ]"
+        />
       </ProfileCard>
       <ProfileCard title="Feedback" card-type="sheet">
-        <ProfileCardSheet :data="feedbackData" :columns="[
-          { field: 'feedbackTitle', header: 'Case title' },
-          { field: 'feedbackDate', header: 'Date' },
-          { field: 'feedbackStatus', header: 'Status' },
-        ]" />
+        <ProfileCardSheet
+          :data="feedbackData"
+          :columns="[
+            { field: 'feedbackTitle', header: 'Case title' },
+            { field: 'feedbackDate', header: 'Date' },
+            { field: 'feedbackStatus', header: 'Status' },
+          ]"
+        />
       </ProfileCard>
       <ProfileCard title="Contact preferences" card-type="sheet">
-        <ProfileCardSheet :data="contactMethodData" :columns="[{ field: 'contactMethod', header: 'Contact Method' }]" />
+        <ProfileCardSheet
+          :data="contactMethodData"
+          :columns="[{ field: 'contactMethod', header: 'Contact Method' }]"
+        />
       </ProfileCard>
     </div>
     <Dialog v-model:visible="isModalVisible" modal>
       <template #header>
         <h3 class="modal__title">Edit {{ modalTitle.toLowerCase() }}</h3>
       </template>
-      <ModalContent :data="modalTitle == 'Contact info' ? contactInfoData : insuranceInfoData" :title="modalTitle"
-        @update-data="submitModal"></ModalContent>
+      <ModalContent
+        :data="modalTitle == 'Contact info' ? contactInfoData : insuranceInfoData"
+        :title="modalTitle"
+        @update-data="submitModal"
+      ></ModalContent>
     </Dialog>
   </section>
 </template>

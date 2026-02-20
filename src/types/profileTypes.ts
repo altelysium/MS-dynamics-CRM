@@ -1,3 +1,5 @@
+import { type FormFieldState } from "@primevue/forms";
+
 export type ContactInfoKeys = "fullName" | "phone" | "homePhone" | "address" | "email";
 
 export type PersonalDataKeys =
@@ -52,31 +54,45 @@ export interface Product {
   brand: string;
   sku: string;
   weight: number;
-  dimensions: {
-    width: number;
-    height: number;
-    depth: number;
-  };
+  dimensions: ProductDimensions;
   warrantyInformation: string;
   shippingInformation: string;
   availabilityStatus: string;
   reviews: Review[];
   returnPolicy: string;
   minimumOrderQuantity: number;
-  meta: {
-    createdAt: string;
-    updatedAt: string;
-    barcode: string;
-    qrCode: string;
-  };
+  meta: ProductMeta;
   thumbnail: string;
   images: string[];
 }
 
+export interface ProductDimensions {
+  width: number;
+  height: number;
+  depth: number;
+}
+
+export interface ProductMeta {
+  createdAt: string;
+  updatedAt: string;
+  barcode: string;
+  qrCode: string;
+}
+
 export interface Review {
-  rating: 1 | 2 | 3 | 4 | 5;
+  rating: ReviewRating;
   comment: string;
   date: string;
   reviewerName: string;
   reviewerEmail: string;
+}
+
+export type ReviewRating = 1 | 2 | 3 | 4 | 5
+export type FormData = {
+  register: (field: string, options: any) => any;
+  reset: () => void;
+  valid: boolean;
+}
+export interface FormDataValue {
+  [key: string]: FormFieldState;
 }

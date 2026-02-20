@@ -7,7 +7,6 @@ import { ref } from "vue";
 const emit = defineEmits(["updateData"]);
 const props = defineProps<{
   data: Record<string, KeyValueRow>;
-  title: string;
 }>();
 
 function getValues(data: Record<string, KeyValueRow>): Record<string, string> {

@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -18,5 +16,3 @@
     <path d="M10.6 9a9 9 0 0 1 4.4 4.4" />
   </svg>
 </template>
-
-<style></style>

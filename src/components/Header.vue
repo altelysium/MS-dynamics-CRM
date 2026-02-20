@@ -18,22 +18,42 @@ function submitLogout(e: PointerEvent): void {
 
 <template>
   <header class="header">
-    <Button icon="pi pi-bars" style="color: #848485; background-color: #FFFFFF; border: none; width: 24px; height: 24px;"></Button>
+    <Button v-if="isAuth"
+      icon="pi pi-bars"
+      style="color: #848485; background-color: #ffffff; border: none; width: 24px; height: 24px"
+    ></Button>
     <RouterLink :to="{ name: 'home' }" style="text-decoration: none; color: inherit; flex-grow: 2">
       <div class="header__logo">
         <LogoIcon />
         <h1 class="header__logo-title">HCare</h1>
       </div>
     </RouterLink>
-    <Button icon="pi pi-bell" style="color: #848485; background-color: #FFFFFF; border: none; width: 24px; height: 24px;"></Button>
-    <Button @click="togglePopover" style="background-color: #FFFFFF; border: none; outline: none; padding: 0;">
-    <img v-if="isAuth" :src="loggedUserData?.image" :alt="loggedUserData?.firstName + ' ' + loggedUserData?.lastName" class="header__avatar">
+    <Button v-if="isAuth"
+      icon="pi pi-bell"
+      style="color: #848485; background-color: #ffffff; border: none; width: 24px; height: 24px"
+    ></Button>
+    <Button
+      @click="togglePopover"
+      style="background-color: #ffffff; border: none; outline: none; padding: 0"
+    >
+      <img
+        v-if="isAuth"
+        :src="loggedUserData?.image"
+        :alt="loggedUserData?.firstName + ' ' + loggedUserData?.lastName"
+        class="header__avatar"
+      />
     </Button>
     <Popover ref="popover">
       <div class="header-popover">
-        <h3 class="header-popover__title">{{ loggedUserData?.firstName + " " + loggedUserData?.lastName }}</h3>
-        <Button label="Sign Out" @click="submitLogout" style="width: 150px;"
-        :pt="{label: {style: {font: '500 14px/21px Poppins'}}}"></Button>
+        <h3 class="header-popover__title">
+          {{ loggedUserData?.firstName + " " + loggedUserData?.lastName }}
+        </h3>
+        <Button
+          label="Sign Out"
+          @click="submitLogout"
+          style="width: 150px"
+          :pt="{ label: { style: { font: '500 14px/21px Poppins' } } }"
+        ></Button>
       </div>
     </Popover>
   </header>

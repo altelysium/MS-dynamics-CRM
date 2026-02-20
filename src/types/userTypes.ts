@@ -4,7 +4,7 @@ export interface User {
   lastName: string;
   maidenName: string;
   age: number;
-  gender: "male" | "female";
+  gender: UserGender;
   email: string;
   phone: string;
   username: string;
@@ -15,59 +15,62 @@ export interface User {
   height: number;
   weight: number;
   eyeColor: string;
-  hair: {
-    color: string;
-    type: string;
-  };
+  hair: UserHair;
   ip: string;
-  address: {
-    address: string;
-    city: string;
-    state: string;
-    stateCode: string;
-    postalCode: string;
-    coordinates: {
-      lat: number;
-      lng: number;
-    };
-    country: string;
-  };
+  address: UserAddress;
   macAddress: string;
   university: string;
-  bank: {
-    cardExpire: string;
-    cardNumber: string;
-    cardType: string;
-    currency: string;
-    iban: string;
-  };
-  company: {
-    department: string;
-    name: string;
-    title: string;
-    address: {
-      address: string;
-      city: string;
-      state: string;
-      stateCode: string;
-      postalCode: string;
-      coordinates: {
-        lat: number;
-        lng: number;
-      };
-      country: string;
-    };
-  };
+  bank: UserBank;
+  company: UserCompany;
   ein: string;
   ssn: string;
   userAgent: string;
-  crypto: {
-    coin: string;
-    wallet: string;
-    network: string;
-  };
-  role: "admin" | "moderator" | "user";
+  crypto: UserCrypto;
+  role: UserRole;
 }
+
+export type UserGender = "male" | "female";
+
+export interface UserHair {
+  color: string;
+  type: string;
+}
+
+export interface UserAddress {
+  address: string;
+  city: string;
+  state: string;
+  stateCode: string;
+  postalCode: string;
+  coordinates: UserCoordinates;
+  country: string;
+}
+
+export interface UserCoordinates {
+  lat: number;
+  lng: number;
+}
+
+export interface UserBank {
+  cardExpire: string;
+  cardNumber: string;
+  cardType: string;
+  currency: string;
+  iban: string;
+}
+export interface UserCompany {
+  department: string;
+  name: string;
+  title: string;
+  address: UserAddress;
+}
+
+export interface UserCrypto {
+  coin: string;
+  wallet: string;
+  network: string;
+}
+export type UserRole = "admin" | "moderator" | "user";
 
 export interface UsersResponseData {
   limit: number;
@@ -75,3 +78,33 @@ export interface UsersResponseData {
   total: number;
   users: User[];
 }
+
+export interface sheetRow {
+  id: number;
+  name: string;
+  cityCountry: string;
+  availableHours: "8:00 - 18:00" | "12:00 - 22:00";
+  schedule: "Book date";
+  confirmation: "Confirmed" | "Not confirmed";
+  specs: string;
+  image: string;
+}
+
+export interface Filters {
+  depatmentsArray: FiltersDepartments;
+  depatmentsValue: FiltersDepartments[number] | "";
+}
+
+export type FiltersDepartments = [
+    "Engineering",
+    "Support",
+    "Research and Development",
+    "Human Resources",
+    "Product Management",
+    "Marketing",
+    "Services",
+    "Accounting",
+    "Training",
+    "Legal",
+    "Sales",
+];
